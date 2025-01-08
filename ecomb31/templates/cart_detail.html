@@ -1,0 +1,43 @@
+{% extends "index.html" %}
+{% block title %}HOME PAGE{% endblock %}
+{% block content %}
+
+{% include "header.html" %}
+{% include "navbar.html" %}
+{% load static %}
+<h2>Shopping Cart</h2>
+
+<table class="table">
+    <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Subtotal</th>
+        <th>Actions</th>
+    </tr>
+    {% for item in cart_items %}
+    <tr>
+        <td>{{ item.product.name }}</td>
+        <td>
+            <form method="POST" action="{% url 'update_cart' item.product.id %}">
+                {% csrf_token %}
+                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" style="width: 50px;">
+                <button type="submit">Update</button>
+            </form>
+        </td>
+        <td>{{ item.product.price }}</td>
+        <td>{{ item.sub_total }}</td>
+        <td>
+            <a href="{% url 'remove_from_cart' item.product.id %}">Remove</a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="5">Your cart is empty.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3>Total: ₹{{ total }}</h3>
+<a href="#" class="btn btn-success">Proceed to Checkout</a>
+{% endblock %}
